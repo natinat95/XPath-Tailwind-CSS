@@ -27,7 +27,10 @@ document.getElementById('scraping-form').addEventListener('submit', function(eve
             const nodes = [];
             let node = result.iterateNext();
             while (node) {
-                nodes.push(node.textContent.trim());
+                const nodeText = node.textContent.trim(); // Obtener el texto y eliminar los espacios en blanco
+                if (nodeText) { // Solo agregar el nodo si tiene contenido
+                    nodes.push(nodeText);
+                }
                 node = result.iterateNext();
             }
 
