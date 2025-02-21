@@ -27,9 +27,17 @@ document.getElementById('scraping-form').addEventListener('submit', function(eve
             const nodes = [];
             let node = result.iterateNext();
             while (node) {
-                const nodeText = node.textContent.trim(); // Obtener el texto y eliminar los espacios en blanco
-                if (nodeText) { // Solo agregar el nodo si tiene contenido
-                    nodes.push(nodeText);
+                // Si el nodo es una imagen, guardamos el src
+                if (node.tagName.toLowerCase() === 'img') {
+                    const imageUrl = node.getAttribute('src');
+                    if (imageUrl) {
+                        nodes.push(imageUrl);
+                    }
+                } else {
+                    const nodeText = node.textContent.trim(); // Obtener el texto y eliminar los espacios en blanco
+                    if (nodeText) { // Solo agregar el nodo si tiene contenido
+                        nodes.push(nodeText);
+                    }
                 }
                 node = result.iterateNext();
             }
@@ -42,7 +50,15 @@ document.getElementById('scraping-form').addEventListener('submit', function(eve
                 ul.classList.add('list-disc', 'pl-5');  // Añadir clases de Tailwind para listas con puntos (viñetas)
                 nodes.forEach(item => {
                     const li = document.createElement('li');  // Crear cada elemento de lista
-                    li.textContent = item;  // Asignar el contenido al <li>
+                    if (item.startsWith('http')) {  // Si es una URL de imagen
+                        const img = document.createElement('img');  // Crear un elemento <img>
+                        img.src = item;  // Asignar la URL de la imagen
+                        img.alt = 'Imagen';  // Texto alternativo
+                        img.classList.add('max-w-xs');  // Tamaño de la imagen (opcional)
+                        li.appendChild(img);  // Añadir la imagen al <li>
+                    } else {
+                        li.textContent = item;  // Si no es una imagen, es solo texto
+                    }
                     ul.appendChild(li);  // Añadir el <li> a la lista
                 });
                 resultDiv.appendChild(ul);  // Añadir la lista a la página
