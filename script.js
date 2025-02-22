@@ -29,8 +29,14 @@ document.getElementById('scraping-form').addEventListener('submit', function(eve
             while (node) {
                 // Si el nodo es una imagen, guardamos el src
                 if (node.tagName.toLowerCase() === 'img') {
-                    const imageUrl = node.getAttribute('src');
+                    let imageUrl = node.getAttribute('src');
                     if (imageUrl) {
+                        // Si la URL de la imagen es relativa, convertirla en absoluta
+                        const baseUrl = new URL(url);
+                        if (!imageUrl.startsWith('http')) {
+                            imageUrl = new URL(imageUrl, baseUrl).href;
+                        }
+                        
                         nodes.push(imageUrl);
                     }
                 } else {
@@ -74,3 +80,5 @@ document.getElementById('scraping-form').addEventListener('submit', function(eve
     // Llamar a la función de scraping
     scrapeData(url, xpath);
 });
+
+
