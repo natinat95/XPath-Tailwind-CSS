@@ -14,19 +14,44 @@
         <form id="scraping-form" class="space-y-4">
             <div>
                 <label for="url" class="block font-medium">URL</label>
-                <input type="url" id="url" class="w-full p-2 border border-gray-300 rounded" placeholder="Ingresa una URL">
+                <div class="relative">
+                    <select id="url" class="w-full p-2 border border-gray-300 rounded appearance-none">
+                        <option value="" disabled selected>Selecciona o escribe una URL</option>
+                        <option value="https://www.bbc.com/">BBC</option>
+                        <option value="https://www.wikipedia.org/">Wikipedia</option>
+                        <option value="https://www.nytimes.com/international/">NYTimes</option>
+                        <option value="custom">Escribir una URL</option>
+                    </select>
+                </div>
+                <!-- Campo oculto para escribir URL -->
+                <input type="url" id="custom-url" class="w-full p-2 border border-gray-300 rounded mt-2" placeholder="Ingresa una URL" style="display: none;">
             </div>
+
             <div>
                 <label for="xpath" class="block font-medium">XPath</label>
                 <input type="text" id="xpath" class="w-full p-2 border border-gray-300 rounded" placeholder="Ingresa un XPath">
             </div>
+
             <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Realizar Scraping</button>
         </form>
 
-        <div id="result" class="mt-6">
-        </div>
+        <div id="result" class="mt-6"></div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+    document.getElementById('url').addEventListener('change', function () {
+        const customUrlField = document.getElementById('custom-url');
+
+        if (this.value === 'custom') {
+            customUrlField.style.display = "block"; // Muestra el input
+            customUrlField.focus();
+        } else {
+            customUrlField.style.display = "none"; // Oculta el input
+            customUrlField.value = ""; // Limpia el campo cuando se oculta
+        }
+    });
+    </script>
+ <script src="script.js"></script>
 </body>
 </html>
+
