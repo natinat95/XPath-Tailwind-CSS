@@ -1,7 +1,14 @@
-document.getElementById('scraping-form').addEventListener('submit', function(event) {
+document.getElementById('scraping-form').addEventListener('submit', function (event) {
     event.preventDefault();  // Evita el envío del formulario y recarga de la página
 
-    const url = document.getElementById('url').value.trim();  // Obtén la URL
+    let url = document.getElementById('url').value.trim();    // Obtén la URL
+    const customUrlField = document.getElementById('custom-url').value.trim();
+
+    // Si la opción seleccionada es "custom", usa el valor del input
+    if (document.getElementById('url').value === 'custom' && customUrlField !== '') {
+        url = customUrlField;
+    }
+
     const xpath = document.getElementById('xpath').value.trim();  // Obtén el XPath
 
     if (!url || !xpath) {
@@ -11,12 +18,12 @@ document.getElementById('scraping-form').addEventListener('submit', function(eve
 
     // Usamos AllOrigins para evitar problemas de CORS
     const proxiedUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-
+    
     // Función para realizar scraping utilizando XPath
     async function scrapeData(url, xpath) {
         try {
             const response = await fetch(proxiedUrl);  // Realizamos la solicitud a la URL a través de AllOrigins
-            const text = await response.text();  // Obtenemos el contenido HTML como texto
+            const text = new TextDecoder('utf-8').decode(await response.arrayBuffer()); // Obtenemos el contenido HTML como texto manejando caracteres especiales
 
             // Crear un documento temporal para poder usar XPath
             const parser = new DOMParser();
@@ -36,7 +43,7 @@ document.getElementById('scraping-form').addEventListener('submit', function(eve
                         if (!imageUrl.startsWith('http')) {
                             imageUrl = new URL(imageUrl, baseUrl).href;
                         }
-                        
+
                         nodes.push(imageUrl);
                     }
                 } else {
@@ -80,5 +87,10 @@ document.getElementById('scraping-form').addEventListener('submit', function(eve
     // Llamar a la función de scraping
     scrapeData(url, xpath);
 });
+
+
+
+
+
 
 
